@@ -1,28 +1,21 @@
-// app/admin/(console)/content/brands/[id]/edit/page.tsx
 import ContentForm from "@/components/admin/content/ContentForm";
 import type { ContentItem, Section } from "@/lib/content";
 
 export default async function EditPage({
   params,
 }: {
-  // ✅ Next 15 대응: params가 Promise일 수 있음
-  params: Promise<{ id: string }> | { id: string };
+  // ✅ 반드시 Promise로 선언 (PageProps의 제약을 만족)
+  params: Promise<{ id: string }>;
 }) {
   const section: Section = "brands";
+  const { id } = await params; // ✅ Promise 해제
 
-  // ✅ Promise/객체 모두 커버
-  const { id } = await Promise.resolve(params);
-
-  // 서버 컴포넌트에선 상대 경로 fetch 사용 가능 (요청 시 실행)
   const res = await fetch(`/api/admin/content/${section}/${id}`, {
     cache: "no-store",
   });
-
   if (!res.ok) {
-    // 빌드엔 영향 없게 런타임에서만 에러 처리
     throw new Error(`콘텐츠 로드 실패: ${res.status}`);
   }
-
   const item: ContentItem = await res.json();
 
   return (
