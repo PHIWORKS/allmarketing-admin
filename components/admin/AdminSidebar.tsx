@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useMemo } from "react";
 import {
   LayoutDashboard, LibraryBig, Users, MailOpen, Megaphone, MessagesSquare,
-  Settings, ChevronDown, ChevronRight, ShieldCheck, FileText, Link2
+  Settings, ChevronDown, ChevronRight
 } from "lucide-react";
 
 function Item({
