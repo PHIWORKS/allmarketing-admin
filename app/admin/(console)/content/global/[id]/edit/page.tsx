@@ -1,20 +1,22 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import ContentForm from "@/components/admin/content/ContentForm";
 import type { ContentItem, Section } from "@/lib/content";
 
-export default function EditPage({ params }: { params: { id: string } }) {
+export default async function EditPage({
+  params,
+}: {
+  params: Promise<{ id: string }>; // ✅ 반드시 Promise
+}) {
   const section: Section = "global";
-  const [item, setItem] = useState<ContentItem | null>(null);
 
-  useEffect(() => {
-    fetch(`/api/admin/content/${section}/${params.id}`)
-      .then((r) => r.json())
-      .then(setItem);
-  }, [params.id, section]);
+  const { id } = await params;  
 
-  if (!item) return <div>로딩중…</div>;
+  const res = await fetch(`/api/admin/content/${section}/${id}`, {
+    cache: "no-store",
+  });
+
+  const item: ContentItem = await res.json();
+
+  if (!res) return <div>로딩중…</div>;
 
   return (
     <div className="space-y-4">
