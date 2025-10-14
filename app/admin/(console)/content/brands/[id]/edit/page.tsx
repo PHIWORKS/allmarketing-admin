@@ -24,4 +24,4 @@ export default async function EditPage({
       <ContentForm section={section} initial={item} />
     </div>
   );
-}
+} 
