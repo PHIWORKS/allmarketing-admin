@@ -62,7 +62,7 @@ export default function ContentForm({
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
 
-  const set = (k: keyof ContentItem, v: any) => {
+  const set = <K extends keyof ContentItem>(k: keyof ContentItem, v:  ContentItem[K]) => {
     setDirty(true);
     setForm((prev) => ({ ...prev, [k]: v }));
   };

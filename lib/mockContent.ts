@@ -3,7 +3,7 @@ import type { ContentItem, Section } from "@/lib/content";
 
 // 간단한 유틸
 const now = () => new Date().toISOString();
-const d = (s: Section) => s.toUpperCase();
+// const d = (s: Section) => s.toUpperCase();
 
 // 섹션별 예시 데이터 (각 1~2개)
 export const MOCK_CONTENT: Record<Section, ContentItem[]> = {
