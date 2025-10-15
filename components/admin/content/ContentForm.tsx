@@ -7,7 +7,7 @@ import {
   DEFAULTS,
   type Section,
   type ContentItem,
-} from "../../../lib/content";
+} from "@/lib/content";
 import CardNewsEditor, { type CardNewsItem } from "./CardNewsEditor";
 
 /**

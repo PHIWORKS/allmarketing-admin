@@ -3,8 +3,8 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import type { Section, ContentItem } from "../../../lib/content";
-import { SECTION_LABEL } from "../../../lib/content";
+import type { Section, ContentItem } from "@/lib/content";
+import { SECTION_LABEL } from "@/lib/content";
 
 type ApiListResponse = { total: number; rows: ContentItem[] };
 

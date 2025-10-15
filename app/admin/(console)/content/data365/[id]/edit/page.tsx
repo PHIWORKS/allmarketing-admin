@@ -6,7 +6,7 @@ export default async function EditPage({
 }: {
   params: Promise<{ id: string }>; // ✅ 반드시 Promise
 }) {
-  const section: Section = "market";
+  const section: Section = "data365";
 
   const { id } = await params;  
 
