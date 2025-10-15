@@ -28,7 +28,7 @@ export default function MemberListPage() {
   const page = Number(sp.get("page") || "1");
 
   const setParam = (k: string, v: string) => {
-    const params = new URLSearchParams(sp as any);
+    const params = new URLSearchParams(sp.toString());
     if (!v) params.delete(k);
     else params.set(k, v);
     if (k !== "page") params.set("page", "1"); // 필터 바뀌면 1페이지로
@@ -54,7 +54,7 @@ export default function MemberListPage() {
 
   // 현재 목록의 쿼리스트링을 from으로 같이 넘겨서 편집 후 돌아오면 그대로 복원
   const fromQS = useMemo(() => {
-    const params = new URLSearchParams(sp as any);
+    const params = new URLSearchParams(sp.toString());
     return params.toString(); // e.g. "q=abc&status=active&page=2"
   }, [sp]);
 
