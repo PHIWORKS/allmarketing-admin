@@ -5,13 +5,15 @@ import { useRouter } from "next/navigation";
 import BannerForm from "@/components/admin/banners/BannerForm";
 import type { Banner } from "@/lib/banners.store";
 
-export default function BannerEditPage({ params }: { params: { id: string } }) {
+export default async function BannerEditPage({ 
+  params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [item, setItem] = useState<Banner | null>(null);
+  const { id } = await params; // ✅ Promise 해제
 
   useEffect(() => {
-    fetch(`/api/admin/banners/${params.id}`).then(r=>r.json()).then(setItem);
-  }, [params.id]);
+    fetch(`/api/admin/banners/${id}`).then(r=>r.json()).then(setItem);
+  }, [id]);
 
   if (!item) return <div>로딩중…</div>;
 
