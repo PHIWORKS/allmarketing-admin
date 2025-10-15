@@ -5,26 +5,27 @@ import { useRouter } from "next/navigation";
 import BannerForm from "@/components/admin/banners/BannerForm";
 import type { Banner } from "@/lib/banners.store";
 
-type Params = Promise<{ id: string }> | { id: string };
-
-export default function BannerEditPage({ params }: { params: Params }) {
+export default function BannerEditPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const router = useRouter();
   const [id, setId] = useState<string | null>(null);
   const [item, setItem] = useState<Banner | null>(null);
 
-  // 1) params가 Promise일 수도 있으므로 여기서 해제
+  // params 해제
   useEffect(() => {
     let alive = true;
-    (async () => {
-      const resolved = await Promise.resolve(params);
-      if (alive) setId(resolved.id);
-    })();
+    Promise.resolve(params).then((p) => {
+      if (alive) setId(p.id);
+    });
     return () => {
       alive = false;
     };
   }, [params]);
 
-  // 2) id가 준비되면 데이터 fetch
+  // 데이터 fetch
   useEffect(() => {
     if (!id) return;
     let alive = true;
