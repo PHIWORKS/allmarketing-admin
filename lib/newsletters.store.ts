@@ -10,10 +10,15 @@ export type Newsletter = {
   createdAt: string;
 };
 
-// 전역에 보관해서 hot-reload에도 유지
-const g = globalThis as any;
+// 전역 보강: globalThis에 타입을 안전하게 지정
+type GlobalWithNL = typeof globalThis & {
+  __NEWSLETTERS__?: Newsletter[];
+};
+
+const g = globalThis as GlobalWithNL;
+
 if (!g.__NEWSLETTERS__) {
-  g.__NEWSLETTERS__ = <Newsletter[]>[
+  g.__NEWSLETTERS__ = [
     {
       id: "1",
       title: "10월 둘째주 마케팅 인사이트",
@@ -45,14 +50,23 @@ if (!g.__NEWSLETTERS__) {
     },
   ];
 }
-export const NEWSLETTERS: Newsletter[] = g.__NEWSLETTERS__;
+
+export const NEWSLETTERS = g.__NEWSLETTERS__ as Newsletter[];
 
 // helpers
-export function listNewsletters(opts: { q?: string; status?: string; page: number; size: number }) {
+export function listNewsletters(opts: {
+  q?: string;
+  status?: "" | Newsletter["status"];
+  page: number;
+  size: number;
+}) {
   const { q = "", status = "", page, size } = opts;
-  let rows = NEWSLETTERS.filter(n =>
-    (!q || n.title.toLowerCase().includes(q) || n.subject.toLowerCase().includes(q)) &&
-    (!status || n.status === status)
+  let rows = NEWSLETTERS.filter(
+    (n) =>
+      (!q ||
+        n.title.toLowerCase().includes(q) ||
+        n.subject.toLowerCase().includes(q)) &&
+      (!status || n.status === status)
   );
   const total = rows.length;
   rows = rows.slice((page - 1) * size, page * size);
@@ -75,11 +89,11 @@ export function createNewsletter(body: Partial<Newsletter>) {
 }
 
 export function getNewsletter(id: string) {
-  return NEWSLETTERS.find(n => n.id === id);
+  return NEWSLETTERS.find((n) => n.id === id);
 }
 
 export function updateNewsletter(id: string, patch: Partial<Newsletter>) {
-  const i = NEWSLETTERS.findIndex(n => n.id === id);
+  const i = NEWSLETTERS.findIndex((n) => n.id === id);
   if (i < 0) return null;
   NEWSLETTERS[i] = { ...NEWSLETTERS[i], ...patch };
   return NEWSLETTERS[i];

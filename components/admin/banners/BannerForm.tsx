@@ -1,12 +1,19 @@
+// components/admin/banners/BannerForm.tsx
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { Banner } from "@/lib/banners.store";
 
 type Props = {
   initial?: Partial<Banner>;
   onSaved?: (item: Banner) => void;
 };
+
+// 유니온 타입을 Banner에서 안전하게 가져와 사용
+type Place = Banner["place"];
+type LinkTarget = Banner["linkTarget"];
+type Status = Banner["status"];
 
 export default function BannerForm({ initial, onSaved }: Props) {
   const [form, setForm] = useState<Partial<Banner>>({
@@ -33,7 +40,7 @@ export default function BannerForm({ initial, onSaved }: Props) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
-    const j = await res.json();
+    const j: Banner = await res.json();
     setSaving(false);
     onSaved?.(j);
   };
@@ -55,8 +62,10 @@ export default function BannerForm({ initial, onSaved }: Props) {
           <div className="text-sm text-gray-600">위치</div>
           <select
             className="w-full border rounded-lg px-3 py-2"
-            value={form.place as any}
-            onChange={(e) => setForm((f) => ({ ...f, place: e.target.value as any }))}
+            value={(form.place ?? "home_top") as Place}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, place: e.target.value as Place }))
+            }
           >
             <option value="home_top">홈 상단</option>
             <option value="home_middle">홈 중단</option>
@@ -90,8 +99,10 @@ export default function BannerForm({ initial, onSaved }: Props) {
           <div className="text-sm text-gray-600">링크 타겟</div>
           <select
             className="w-full border rounded-lg px-3 py-2"
-            value={form.linkTarget as any}
-            onChange={(e) => setForm((f) => ({ ...f, linkTarget: e.target.value as any }))}
+            value={(form.linkTarget ?? "_self") as LinkTarget}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, linkTarget: e.target.value as LinkTarget }))
+            }
           >
             <option value="_self">현재창</option>
             <option value="_blank">새창</option>
@@ -102,8 +113,10 @@ export default function BannerForm({ initial, onSaved }: Props) {
           <div className="text-sm text-gray-600">상태</div>
           <select
             className="w-full border rounded-lg px-3 py-2"
-            value={form.status as any}
-            onChange={(e) => setForm((f) => ({ ...f, status: e.target.value as any }))}
+            value={(form.status ?? "draft") as Status}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, status: e.target.value as Status }))
+            }
           >
             <option value="draft">draft</option>
             <option value="active">active</option>
@@ -144,7 +157,15 @@ export default function BannerForm({ initial, onSaved }: Props) {
       </div>
 
       {form.imageUrl ? (
-        <img src={form.imageUrl} alt="미리보기" className="max-w-full rounded-lg border" />
+        <div className="relative w-full h-64 border rounded-lg overflow-hidden">
+          <Image
+            src={form.imageUrl}
+            alt="미리보기"
+            fill
+            className="object-contain"
+            sizes="(max-width: 768px) 100vw, 800px"
+          />
+        </div>
       ) : null}
 
       <div className="flex justify-end">

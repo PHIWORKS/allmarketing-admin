@@ -25,7 +25,6 @@ function assertSection(s: string): asserts s is Section {
 
 /** HMR에서도 유지될 전역 변수 타입 선언 */
 declare global {
-  // eslint-disable-next-line no-var
   var __MEM_DB__: DB | undefined;
 }
 

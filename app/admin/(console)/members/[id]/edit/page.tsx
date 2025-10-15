@@ -13,10 +13,10 @@ export default function EditMemberPage({ params }: { params: { id: string } }) {
       try {
         const res = await fetch(`/api/admin/members/${params.id}`);
         if (!res.ok) throw new Error("불러오기에 실패했습니다");
-        const j = await res.json();
+        const j: Member = await res.json();
         setItem(j);
-      } catch (e: any) {
-        setErr(e.message || "에러");
+      } catch (e: unknown) {
+        setErr(e instanceof Error ? e.message : "에러");
       }
     })();
   }, [params.id]);

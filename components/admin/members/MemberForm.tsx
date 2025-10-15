@@ -27,7 +27,8 @@ export default function MemberForm({ initial, onSaved }: Props) {
     return !!form.name && !!form.email && !saving;
   }, [form, saving]);
 
-  const update = (k: keyof Member, v: any) =>
+  // ✅ 키에 맞는 정확한 값 타입을 강제
+  const update = <K extends keyof Member>(k: K, v: Member[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,25 +50,26 @@ export default function MemberForm({ initial, onSaved }: Props) {
         memo: form.memo?.trim() || undefined,
       };
 
-      const res = await fetch(isEdit ? `/api/admin/members/${initial!.id}` : "/api/admin/members", {
-        method: isEdit ? "PATCH" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        isEdit ? `/api/admin/members/${initial!.id}` : "/api/admin/members",
+        {
+          method: isEdit ? "PATCH" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
-        throw new Error(j.error || "저장에 실패했습니다");
+        throw new Error((j as { error?: string }).error || "저장에 실패했습니다");
       }
       const saved: Member = await res.json();
       onSaved?.(saved);
-      // 신규 작성 시 폼 초기화
-      if (!isEdit) {
-        setForm({ ...MEMBER_DEFAULTS });
-      }
+
+      if (!isEdit) setForm({ ...MEMBER_DEFAULTS });
       alert("저장 완료!");
-    } catch (e: any) {
-      setErr(e.message || "에러가 발생했습니다");
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : "에러가 발생했습니다");
     } finally {
       setSaving(false);
     }
@@ -75,7 +77,9 @@ export default function MemberForm({ initial, onSaved }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {err && <div className="p-3 rounded-md bg-red-50 text-red-700 text-sm">{err}</div>}
+      {err && (
+        <div className="p-3 rounded-md bg-red-50 text-red-700 text-sm">{err}</div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <label className="flex flex-col gap-2">
@@ -126,7 +130,7 @@ export default function MemberForm({ initial, onSaved }: Props) {
           <select
             className="border rounded-lg px-3 py-2"
             value={form.role || "viewer"}
-            onChange={(e) => update("role", e.target.value)}
+            onChange={(e) => update("role", e.target.value as Member["role"])}
           >
             <option value="admin">admin</option>
             <option value="editor">editor</option>
@@ -139,7 +143,9 @@ export default function MemberForm({ initial, onSaved }: Props) {
           <select
             className="border rounded-lg px-3 py-2"
             value={form.status || "active"}
-            onChange={(e) => update("status", e.target.value)}
+            onChange={(e) =>
+              update("status", e.target.value as Member["status"])
+            }
           >
             <option value="active">active</option>
             <option value="inactive">inactive</option>
@@ -171,7 +177,9 @@ export default function MemberForm({ initial, onSaved }: Props) {
         <button
           type="submit"
           disabled={!canSubmit}
-          className={`px-4 py-2 rounded-xl text-white ${saving ? "bg-gray-400" : "bg-emerald-600 hover:bg-emerald-700"}`}
+          className={`px-4 py-2 rounded-xl text-white ${
+            saving ? "bg-gray-400" : "bg-emerald-600 hover:bg-emerald-700"
+          }`}
         >
           {isEdit ? "수정 저장" : "신규 등록"}
         </button>
