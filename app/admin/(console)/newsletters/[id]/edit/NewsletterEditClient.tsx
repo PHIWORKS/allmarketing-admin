@@ -63,7 +63,7 @@ export default function NewsletterEditClient({ id }: { id: string }) {
       }
       alert("수정되었습니다.");
       // 목록으로 돌아가거나, 현재 페이지 갱신 중 선택
-      router.replace("/admin/(console)/newsletters");
+      router.replace("/admin/newsletters");
       // 또는 router.refresh();
     } catch (e: unknown) {
       setErr(e instanceof Error ? e.message : "알 수 없는 오류");

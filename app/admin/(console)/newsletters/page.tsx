@@ -72,7 +72,7 @@ function NewsletterListPageInner() {
           <p className="text-xs text-gray-500 mt-1">작성·예약·발송 상태를 한 눈에 관리합니다.</p>
         </div>
         <Link
-          href="/admin/(console)/newsletters/new"
+          href="/admin/newsletters/new"
           className="px-4 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700"
         >
           새 뉴스레터 작성
@@ -141,7 +141,7 @@ function NewsletterListPageInner() {
                   <td className="px-4 py-3">
                     <Link
                       className="text-emerald-600 hover:underline"
-                      href={`/admin/(console)/newsletters/${r.id}/edit`}
+                      href={`/admin/newsletters/${r.id}/edit`}
                     >
                       수정
                     </Link>

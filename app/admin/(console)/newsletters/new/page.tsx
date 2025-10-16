@@ -26,7 +26,7 @@ export default function NewsletterNewPage() {
     });
     const j = await res.json();
     setSaving(false);
-    if (res.ok) router.replace(`/admin/(console)/newsletters/${j.id}/edit`);
+    if (res.ok) router.replace(`/admin/newsletters/${j.id}/edit`);
     else alert(j.error || "저장 실패");
   };
 
