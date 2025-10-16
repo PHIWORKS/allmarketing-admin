@@ -1,38 +1,11 @@
-"use client";
+// 서버 컴포넌트: params는 Promise 타입 (typed routes)
+import MemberEditClient from "./MemberEditClient";
 
-import { useEffect, useState } from "react";
-import MemberForm from "@/components/admin/members/MemberForm";
-import type { Member } from "@/lib/members";
-
-export default function EditMemberPage({ params }: { params: { id: string } }) {
-  const [item, setItem] = useState<Member | null>(null);
-  const [err, setErr] = useState<string | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch(`/api/admin/members/${params.id}`);
-        if (!res.ok) throw new Error("불러오기에 실패했습니다");
-        const j: Member = await res.json();
-        setItem(j);
-      } catch (e: unknown) {
-        setErr(e instanceof Error ? e.message : "에러");
-      }
-    })();
-  }, [params.id]);
-
-  if (err) return <div className="text-red-600">{err}</div>;
-  if (!item) return <div>로딩중…</div>;
-
-  return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">회원 수정</h1>
-      <MemberForm
-        initial={item}
-        onSaved={() => {
-          location.href = "/admin/(console)/members";
-        }}
-      />
-    </div>
-  );
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params; // ✅ 여기에서만 Promise 해제
+  return <MemberEditClient id={id} />;
 }
